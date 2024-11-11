@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Service API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin: 20px;
+        }
+        .result {
+            margin-top: 20px;
+            white-space: pre-wrap; /* Display JSON nicely */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Member Service API</h1>
+
+        <!-- Add Member Form -->
+        <h2>Add Member</h2>
+        <input type="text" id="first_name" placeholder="First Name" />
+        <input type="text" id="last_name" placeholder="Last Name" />
+        <input type="password" id="password_hash" placeholder="Password" />
+
+
+        <input type="text" id="gender" placeholder="Gender" />
+        <input type="email" id="contact_email" placeholder="Email" />
+        <input type="date" id="date_of_birth" placeholder="Date of Birth" />
+        <input type="number" id="skill_level_rating" placeholder="Skill Level Rating" />
+        <input type="text" id="sport_interest" placeholder="Sport Interest" />
+        <input type="text" id="membership_type" placeholder="Membership Type" />
+        
+        <button onclick="addMember()">Add Member</button>
+
+        <!-- Get All Members -->
+        <h2>View All Members</h2>
+        <button onclick="getMembers()">Get All Members</button>
+
+        <!-- Delete Member Form -->
+        <h2>Delete Member</h2>
+        <input type="number" id="delete_member_id" placeholder="Member ID" />
+        <button onclick="deleteMember()">Delete Member</button>
+
+        <!-- Display Results -->
+        <div class="result" id="result">Results will appear here</div>
+    </div>
+
+    <script>
+        // Add Member Function
+        async function addMember() {
+            const memberData = {
+                    first_name: document.getElementById("first_name").value,
+                    last_name: document.getElementById("last_name").value,
+                    gender: document.getElementById("gender").value,
+                    contact_email: document.getElementById("contact_email").value,
+                    date_of_birth: document.getElementById("date_of_birth").value,
+                    skill_level_rating: document.getElementById("skill_level_rating").value,
+                    sport_interest: document.getElementById("sport_interest").value,
+                    membership_type: document.getElementById("membership_type").value,
+                    password_hash: document.getElementById("password_hash").value  // New field
+                };
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/members', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(memberData)
+                });
+                const result = await response.json();
+                document.getElementById('result').innerText = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('result').innerText = "Error: " + error;
+            }
+        }
+
+        // Get All Members Function
+        async function getMembers() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/members');
+                const members = await response.json();
+                document.getElementById('result').innerText = JSON.stringify(members, null, 2);
+            } catch (error) {
+                document.getElementById('result').innerText = "Error: " + error;
+            }
+        
+        // Delete Member Function
+        async function deleteMember() {
+            const memberId = document.getElementById("delete_member_id").value;
+            if (!memberId) {
+                document.getElementById('result').innerText = "Please enter a valid Member ID.";
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/members/${memberId}`, {
+                    method: 'DELETE'
+                });
+                const result = await response.json();
+                document.getElementById('result').innerText = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('result').innerText = "Error: " + error;
+            }
+        }
+
+
+
+
+
+        }
+    </script>
+</body>
+</html>
