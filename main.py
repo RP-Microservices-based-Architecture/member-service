@@ -18,7 +18,7 @@ app = Flask(__name__)
 # Configuration for the Member Service
 SERVICE_NAME = "MemberService"
 INSTANCE_ID = "member-service-1"
-SERVICE_IP = os.getenv("SERVICE_IP", "https://member-service-1.azurewebsites.net")
+SERVICE_IP = os.getenv("SERVICE_IP", "https://member-f7hdcjgnh7e3ejak.canadacentral-01.azurewebsites.net")
 SERVICE_PORT = int(os.getenv("SERVICE_PORT", 443))
 SERVICE_REGISTRY_URL = os.getenv("SERVICE_REGISTRY_URL")
 
@@ -41,12 +41,12 @@ def register_service():
     payload = {
         "service_name": "MemberService",
         "instance_id": "member-service-1",
-        "ip_address": "https://member-service-1.azurewebsites.net",
+        "ip_address": "https://member-f7hdcjgnh7e3ejak.canadacentral-01.azurewebsites.net",
         "port": 443
     }
     print("Payload:", payload)  # Debugging
     try:
-        response = requests.post(SERVICE_REGISTRY_URL, json=payload)
+        response = requests.post("https://serviceregistry-b5hsbsgnc3aaembu.canadacentral-01.azurewebsites.net/register", json=payload)
         print("Registration Response status code:", response.status_code)
         print("Registration Response content:", response.content.decode())  # Decode response for clarity
         
@@ -86,26 +86,6 @@ def heartbeat():
     else:
         return jsonify({"error": "Instance ID mismatch"}), 400
 
-# Periodic Heartbeat to the Registry
-def send_heartbeat():
-    while True:
-        time.sleep(30)  # Send heartbeat every 30 seconds
-        try:
-            #response = requests.post(f"{SERVICE_REGISTRY_URL}/correct-heartbeat-path", json={"instance_id": INSTANCE_ID})
-
-            response = requests.post(f"{SERVICE_REGISTRY_URL}/heartbeat", json={"instance_id": INSTANCE_ID})
-            print("Heartbeat Response status code:", response.status_code)
-            print("Heartbeat Response content:", response.content.decode())  # Decode response for clarity
-
-            if response.status_code == 200:
-                try:
-                    print("Heartbeat sent successfully:", response.json())
-                except ValueError:
-                    print("Heartbeat sent, but received non-JSON response:", response.content.decode())
-            else:
-                print("Failed to send heartbeat:", response.content.decode())
-        except Exception as e:
-            print("Error sending heartbeat:", e)
 # Initialize MemberService
 # member_service = MemberService(DB_CONFIG)
 
@@ -186,9 +166,9 @@ if __name__ == '__main__':
     register_service()
 
     # Start a background thread to send heartbeats periodically
-    heartbeat_thread = threading.Thread(target=send_heartbeat)
-    heartbeat_thread.daemon = True
-    heartbeat_thread.start()
+    # heartbeat_thread = threading.Thread(target=send_heartbeat)
+    # heartbeat_thread.daemon = True
+    # heartbeat_thread.start()
 
     # Run the Flask app
     app.run(host="0.0.0.0", port=SERVICE_PORT, debug=True)
