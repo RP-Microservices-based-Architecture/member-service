@@ -7,6 +7,7 @@ from flask import Flask, jsonify, render_template, request
 from MemberService import MemberService  # Import the MemberService class
 from DatabaseManager import DatabaseManager  # Assuming DatabaseManager is required
 import pymysql
+from flask_cors import CORS
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # Load environment variables from .env file
@@ -14,7 +15,7 @@ load_dotenv()
 
 # Initialize Flask app
 app = Flask(__name__)
-
+CORS(app)
 # Configuration for the Member Service
 SERVICE_NAME = "MemberService"
 INSTANCE_ID = "member-service-1"
@@ -29,8 +30,20 @@ DB_CONFIG = {
     'user': os.getenv('DB_USER'),
     'password': os.getenv('DB_PASSWORD'),
     'database': os.getenv('DB_NAME'),
-    'ssl': {'ssl': {'ssl-mode': os.getenv('DB_SSL_MODE', 'REQUIRED')}}
+    'ssl': 'DigiCertGlobalRootCA.crt.pem'
 }
+# Initialize DatabaseManager
+try:
+    db_manager = DatabaseManager(
+        host=DB_CONFIG['host'],
+        user=DB_CONFIG['user'],
+        password=DB_CONFIG['password'],
+        database=DB_CONFIG['database'],
+        port=DB_CONFIG['port'],
+        ssl=DB_CONFIG.get('ssl')
+    )
+except Exception as e:
+    print(f"Failed to initialize database manager: {e}")
 
 # Initialize DatabaseManager and MemberService
 db_manager = DatabaseManager(**DB_CONFIG)
@@ -86,9 +99,6 @@ def heartbeat():
     else:
         return jsonify({"error": "Instance ID mismatch"}), 400
 
-# Initialize MemberService
-# member_service = MemberService(DB_CONFIG)
-
 
 @app.route('/')
 def home():
@@ -109,11 +119,6 @@ def add_member():
 def get_all_members():
     members = member_service.get_all_members()  # This method should be defined in MemberService
     return jsonify(members)
-
-
-# Initialize DatabaseManager and MemberService
-db_manager = DatabaseManager(**DB_CONFIG)
-member_service = MemberService(db_manager)
 
 # Routes
 
