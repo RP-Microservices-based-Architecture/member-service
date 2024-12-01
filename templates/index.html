@@ -127,7 +127,7 @@
                 password_hash: document.getElementById("password_hash").value
             };
             try {
-                const response = await fetch('http://127.0.0.1:443/members', {
+                const response = await fetch('http://127.0.0.1:5000/members', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(memberData)
@@ -153,7 +153,7 @@
                 membership_type: document.getElementById("update_membership_type").value
             };
             try {
-                const response = await fetch(`http://127.0.0.1:443/members/${memberId}`, {
+                const response = await fetch(`http://127.0.0.1:5000/members/${memberId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(updatedData)
@@ -168,7 +168,7 @@
 
         async function getMembers() {
             try {
-                const response = await fetch('http://127.0.0.1:443/members');
+                const response = await fetch('http://127.0.0.1:5000/members');
                 const members = await response.json();
                 document.getElementById('result').innerText = JSON.stringify(members, null, 2);
             } catch (error) {
@@ -184,7 +184,7 @@
                 return;
             }
             try {
-                const response = await fetch(`http://127.0.0.1:443/members/${memberId}`, {
+                const response = await fetch(`http://127.0.0.1:5000/members/${memberId}`, {
                     method: 'DELETE'
                 });
                 const result = await response.json();

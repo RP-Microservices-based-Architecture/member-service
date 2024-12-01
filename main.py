@@ -20,13 +20,13 @@ CORS(app)
 SERVICE_NAME = "MemberService"
 INSTANCE_ID = "member-service-1"
 SERVICE_IP = os.getenv("SERVICE_IP", "https://member-f7hdcjgnh7e3ejak.canadacentral-01.azurewebsites.net")
-SERVICE_PORT = int(os.getenv("SERVICE_PORT", 443))
+SERVICE_PORT = int(os.getenv("SERVICE_PORT", 5000))
 SERVICE_REGISTRY_URL = os.getenv("SERVICE_REGISTRY_URL")
 
 # Database Configuration
 DB_CONFIG = {
     'host': os.getenv('DB_HOST'),
-    'port': int(os.getenv('DB_PORT', 443)),
+    'port': int(os.getenv('DB_PORT', 5000)),
     'user': os.getenv('DB_USER'),
     'password': os.getenv('DB_PASSWORD'),
     'database': os.getenv('DB_NAME'),
@@ -55,7 +55,7 @@ def register_service():
         "service_name": "MemberService",
         "instance_id": "member-service-1",
         "ip_address": "https://member-f7hdcjgnh7e3ejak.canadacentral-01.azurewebsites.net",
-        "port": 443
+        "port": 5000
     }
     print("Payload:", payload)  # Debugging
     try:
