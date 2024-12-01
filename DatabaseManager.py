@@ -11,13 +11,20 @@ class DatabaseManager:
         :param database: Name of the database to connect to.
         """
         
-        self.host = host
-        self.user = user
-        self.password = password
-        self.database = database
-        self.port = port
-        self.ssl = ssl
         self.connection = None
+        try:
+            self.connection = mysql.connector.connect(
+                host=host,
+                user=user,
+                password=password,
+                database=database,
+                port=port,
+                ssl_ca=ssl
+            )
+            if self.connection.is_connected():
+                print(f"Connected to the database '{database}' successfully.")
+        except Error as e:
+            print(f"Error connecting to the database: {e}")
         
 
     def connect(self):
